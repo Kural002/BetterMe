@@ -1,0 +1,23 @@
+name: habitify
+description: A simple daily habit tracker using MVVM, Provider & Firebase
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  provider: ^6.1.5+1
+  firebase_core: ^2.8.0
+  firebase_auth: ^4.6.0
+  cloud_firestore: ^4.5.0
+  google_sign_in: ^6.1.0
+  fl_chart: ^0.60.0
+  google_fonts: ^4.0.3
+  intl: ^0.18.0
+
+flutter:
+  uses-material-design: true
