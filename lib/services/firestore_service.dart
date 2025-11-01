@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/habit.dart';
+import '../models/tasks.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -7,20 +7,20 @@ class FirestoreService {
   CollectionReference<Map<String, dynamic>> habitsRef(String uid) =>
       _db.collection('users').doc(uid).collection('habits');
 
-  Future<List<Habit>> fetchHabits(String uid) async {
+  Future<List<Tasks>> fetchHabits(String uid) async {
     final snap = await habitsRef(uid)
         .orderBy('createdAt', descending: true)
         .get();
-    return snap.docs.map((d) => Habit.fromDoc(d)).toList();
+    return snap.docs.map((d) => Tasks.fromDoc(d)).toList();
   }
 
-  Future<Habit> addHabit(String uid, Habit habit) async {
+  Future<Tasks> addHabit(String uid, Tasks habit) async {
     final doc = await habitsRef(uid).add(habit.toMap());
     final saved = await doc.get();
-    return Habit.fromDoc(saved);
+    return Tasks.fromDoc(saved);
   }
 
-  Future<void> updateHabit(String uid, Habit habit) async {
+  Future<void> updateHabit(String uid, Tasks habit) async {
     await habitsRef(uid).doc(habit.id).update(habit.toMap());
   }
 

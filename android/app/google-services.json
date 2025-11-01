@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "922929499169",
-    "project_id": "habitify-1b0cb",
-    "storage_bucket": "habitify-1b0cb.firebasestorage.app"
+    "project_number": "299019460589",
+    "project_id": "betterme-375a7",
+    "storage_bucket": "betterme-375a7.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:922929499169:android:c3de391da306c8184da760",
+        "mobilesdk_app_id": "1:299019460589:android:e1f712af78c347170091e4",
         "android_client_info": {
-          "package_name": "com.example.habitify"
+          "package_name": "com.kural.betterme"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "922929499169-760sbdhgsli0ad5l5sa9233kkbeieq9v.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAriH0Cz9j2IVZX90OPEYRAUuB3kGqg9pc"
+          "current_key": "AIzaSyAfEG88wdjOwnZoVDVApJYQ-wFyLtT33Cw"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "922929499169-760sbdhgsli0ad5l5sa9233kkbeieq9v.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

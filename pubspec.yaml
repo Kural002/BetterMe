@@ -18,6 +18,7 @@ dependencies:
   fl_chart: ^0.60.0
   google_fonts: ^4.0.3
   intl: ^0.18.0
+  change_app_package_name: ^1.0.6
 
 flutter:
   uses-material-design: true

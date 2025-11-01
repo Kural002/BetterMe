@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Habit {
+class Tasks {
   String id;
   String title;
   String description;
   DateTime createdAt;
   bool isCompleted;
+
+  
   Map<String, bool> progress;
 
-  Habit({
+  Tasks({
     required this.id,
     required this.title,
     this.description = '',
@@ -18,12 +20,12 @@ class Habit {
   })  : createdAt = createdAt ?? DateTime.now(),
         progress = progress ?? {};
 
-  factory Habit.fromDoc(DocumentSnapshot doc) {
+  factory Tasks.fromDoc(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>? ?? {};
 
     final rawProgress = (data['progress'] ?? {}) as Map<String, dynamic>;
 
-    return Habit(
+    return Tasks(
       id: doc.id,
       title: data['title'] ?? '',
       description: data['description'] ?? '',

@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAriH0Cz9j2IVZX90OPEYRAUuB3kGqg9pc',
-    appId: '1:922929499169:android:c3de391da306c8184da760',
+    appId: '1:922929499169:android:a1891729ca21e6d94da760',
     messagingSenderId: '922929499169',
     projectId: 'habitify-1b0cb',
     storageBucket: 'habitify-1b0cb.firebasestorage.app',
@@ -60,12 +60,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAUA2TOWP0rx3lMv-M0isGZPL5tPV2M9g8',
-    appId: '1:922929499169:ios:cf72f2b01432d46a4da760',
+    appId: '1:922929499169:ios:6d0f2cb389b4eb854da760',
     messagingSenderId: '922929499169',
     projectId: 'habitify-1b0cb',
     storageBucket: 'habitify-1b0cb.firebasestorage.app',
-    iosClientId: '922929499169-ld6rnuppbnrhdnddedpu6tr8qojfgha1.apps.googleusercontent.com',
-    iosBundleId: 'com.example.habitify',
+    androidClientId: '922929499169-85t7j8ti10uha67k2g5sa7ho7ifhu15p.apps.googleusercontent.com',
+    iosClientId: '922929499169-g229p4e4bf03a2dul7ft09evid925nr9.apps.googleusercontent.com',
+    iosBundleId: 'com.kural.betterme',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -74,6 +75,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '922929499169',
     projectId: 'habitify-1b0cb',
     storageBucket: 'habitify-1b0cb.firebasestorage.app',
+    androidClientId: '922929499169-85t7j8ti10uha67k2g5sa7ho7ifhu15p.apps.googleusercontent.com',
     iosClientId: '922929499169-ld6rnuppbnrhdnddedpu6tr8qojfgha1.apps.googleusercontent.com',
     iosBundleId: 'com.example.habitify',
   );
@@ -87,4 +89,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'habitify-1b0cb.firebasestorage.app',
     measurementId: 'G-NX0CJLQKMH',
   );
+
 }

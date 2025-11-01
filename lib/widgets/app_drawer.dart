@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../viewmodels/habit_viewmodel.dart';
+import '../viewmodels/task_viewmodel.dart';
 import '../services/auth_service.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -36,7 +36,7 @@ class AppDrawer extends StatelessWidget {
               gradient: LinearGradient(
                 colors: vm.isDarkMode
                     ? [Colors.grey.shade900, Colors.black]
-                    : [Colors.indigo, Colors.blue],
+                    : [Colors.grey.shade500, Colors.grey.shade200],
               ),
             ),
           ),

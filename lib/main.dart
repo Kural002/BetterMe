@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'viewmodels/habit_viewmodel.dart';
+import 'viewmodels/task_viewmodel.dart';
 import 'views/home_screen.dart';
 import 'services/auth_service.dart';
 import 'utils/app_theme.dart';
