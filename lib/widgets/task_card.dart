@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../models/tasks.dart';
-import '../viewmodels/task_viewmodel.dart';
-import '../services/auth_service.dart';
 
 class TaskCard extends StatelessWidget {
   final Tasks tasks;
@@ -10,22 +7,52 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<HabitViewModel>(context, listen: false);
-    final auth = Provider.of<AuthService>(context, listen: false);
-    final user = auth.currentUser;
+    Color timeColor;
 
+    switch (tasks.timeOfDay.toLowerCase()) {
+      case 'morning':
+        timeColor = Colors.amber;
+        break;
+      case 'afternoon':
+        timeColor = Colors.orangeAccent;
+        break;
+      case 'evening':
+        timeColor = Colors.deepPurpleAccent;
+        break;
+      case 'night':
+        timeColor = Colors.indigoAccent;
+        break;
+      default:
+        timeColor = Colors.grey;
+    }
 
     return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      elevation: 2,
       child: ListTile(
-        title: Text(tasks.title),
-        subtitle: Text(
-          tasks.description.isNotEmpty ? tasks.description : 'No description',
+        title: Text(
+          tasks.title,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (tasks.description.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Text(
+                  tasks.description,
+                  style: const TextStyle(color: Colors.black54),
+                ),
+              ),
+          ],
         ),
         trailing: Text(
-          tasks.createdAt != null
-              ? TimeOfDay.fromDateTime(tasks.createdAt).format(context)
-              : '',
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
+          tasks.timeOfDay,
+          style: TextStyle(
+            color: timeColor,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

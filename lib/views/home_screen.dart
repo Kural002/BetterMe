@@ -9,7 +9,7 @@ import 'login_screen.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
-  Widget _buildBody(BuildContext context, HabitViewModel vm, user) {
+  Widget _buildBody(BuildContext context, TasksViewModel vm, user) {
     if (vm.isLoading) return const Center(child: CircularProgressIndicator());
     if (user == null) return const LoginScreen();
 
@@ -21,7 +21,8 @@ class HomeScreen extends StatelessWidget {
     void _showAddTaskDialog(BuildContext context) {
       final titleController = TextEditingController();
       final descController = TextEditingController();
-      final vm = Provider.of<HabitViewModel>(context, listen: false);
+      String? selectedTimeOfDay; 
+      final vm = Provider.of<TasksViewModel>(context, listen: false);
       final uid = vm.currentUserId;
 
       showDialog(
@@ -31,26 +32,45 @@ class HomeScreen extends StatelessWidget {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             title: const Text("Add New Task"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    labelText: "Task Title",
-                    border: OutlineInputBorder(),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: titleController,
+                    decoration: const InputDecoration(
+                      labelText: "Task Title",
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: descController,
-                  decoration: const InputDecoration(
-                    labelText: "Description (optional)",
-                    border: OutlineInputBorder(),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: descController,
+                    decoration: const InputDecoration(
+                      labelText: "Description (optional)",
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 2,
                   ),
-                  maxLines: 2,
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                      labelText: "Select Time of Day",
+                      border: OutlineInputBorder(),
+                    ),
+                    value: selectedTimeOfDay,
+                    items: ['Morning', 'Afternoon', 'Evening', 'Night']
+                        .map((time) => DropdownMenuItem(
+                              value: time,
+                              child: Text(time),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      selectedTimeOfDay = value!;
+                    },
+                  ),
+                ],
+              ),
             ),
             actions: [
               TextButton(
@@ -61,13 +81,19 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () async {
                   final title = titleController.text.trim();
                   final desc = descController.text.trim();
-                  if (title.isEmpty) return;
 
-                  await vm.addHabit(uid, title, desc);
+                  if (title.isEmpty || selectedTimeOfDay == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Please fill all fields")),
+                    );
+                    return;
+                  }
+
+                  await vm.addTask(uid, title, desc, selectedTimeOfDay!);
                   Navigator.pop(ctx);
 
-                  ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                    const SnackBar(content: Text("Habit added successfully!")),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Task added successfully!")),
                   );
                 },
                 child: const Text("Add"),
@@ -79,7 +105,7 @@ class HomeScreen extends StatelessWidget {
     }
 
     return RefreshIndicator(
-      onRefresh: () async => vm.loadHabits(user.uid),
+      onRefresh: () async => vm.loadTasks(user.uid),
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -154,7 +180,7 @@ class HomeScreen extends StatelessWidget {
 
                 if (direction == DismissDirection.startToEnd) {
                   task.isCompleted = true;
-                  await vm.updateHabit(uid, task);
+                  await vm.updateTask(uid, task);
                   ScaffoldMessenger.of(scaffoldContext).showSnackBar(
                     SnackBar(
                       content: Text("${task.title} marked as completed"),
@@ -164,13 +190,13 @@ class HomeScreen extends StatelessWidget {
                           task.isCompleted = false;
                           vm.tasks.add(task);
                           vm.notifyListeners();
-                          await vm.updateHabit(uid, task);
+                          await vm.updateTask(uid, task);
                         },
                       ),
                     ),
                   );
                 } else if (direction == DismissDirection.endToStart) {
-                  await vm.deleteHabit(uid, task.id);
+                  await vm.deleteTask(uid, task.id);
                   ScaffoldMessenger.of(scaffoldContext).showSnackBar(
                     SnackBar(
                       content: Text("${task.title} deleted"),
@@ -179,7 +205,7 @@ class HomeScreen extends StatelessWidget {
                         onPressed: () async {
                           vm.tasks.add(task);
                           vm.notifyListeners();
-                          await vm.restoreHabit(uid, task);
+                          await vm.restoreTask(uid, task);
                         },
                       ),
                     ),
@@ -203,7 +229,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<HabitViewModel>(context);
+    final vm = Provider.of<TasksViewModel>(context);
     final auth = Provider.of<AuthService>(context);
     final user = auth.currentUser;
 

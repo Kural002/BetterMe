@@ -4,31 +4,31 @@ import '../models/tasks.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  CollectionReference<Map<String, dynamic>> habitsRef(String uid) =>
-      _db.collection('users').doc(uid).collection('habits');
+  CollectionReference<Map<String, dynamic>> tasksRef(String uid) =>
+      _db.collection('users').doc(uid).collection('tasks');
 
-  Future<List<Tasks>> fetchHabits(String uid) async {
-    final snap = await habitsRef(uid)
+  Future<List<Tasks>> fetchTasks(String uid) async {
+    final snap = await tasksRef(uid)
         .orderBy('createdAt', descending: true)
         .get();
     return snap.docs.map((d) => Tasks.fromDoc(d)).toList();
   }
 
-  Future<Tasks> addHabit(String uid, Tasks habit) async {
-    final doc = await habitsRef(uid).add(habit.toMap());
+  Future<Tasks> addTask(String uid, Tasks task) async {
+    final doc = await tasksRef(uid).add(task.toMap());
     final saved = await doc.get();
     return Tasks.fromDoc(saved);
   }
 
-  Future<void> updateHabit(String uid, Tasks habit) async {
-    await habitsRef(uid).doc(habit.id).update(habit.toMap());
+  Future<void> updateTask(String uid, Tasks task) async {
+    await tasksRef(uid).doc(task.id).update(task.toMap());
   }
 
-  Future<void> markCompleted(String uid, String habitId) async {
-    await habitsRef(uid).doc(habitId).update({'isCompleted': true});
+  Future<void> markCompleted(String uid, String taskId) async {
+    await tasksRef(uid).doc(taskId).update({'isCompleted': true});
   }
 
-  Future<void> deleteHabit(String uid, String habitId) async {
-    await habitsRef(uid).doc(habitId).delete();
+  Future<void> deleteTask(String uid, String taskId) async {
+    await tasksRef(uid).doc(taskId).delete();
   }
 }

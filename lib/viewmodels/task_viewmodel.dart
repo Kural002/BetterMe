@@ -4,7 +4,7 @@ import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
 import 'package:intl/intl.dart';
 
-class HabitViewModel extends ChangeNotifier {
+class TasksViewModel extends ChangeNotifier {
   final FirestoreService _firestore = FirestoreService();
   final AuthService _auth = AuthService();
   String get currentUserId => _auth.currentUser?.uid ?? '';
@@ -17,64 +17,82 @@ class HabitViewModel extends ChangeNotifier {
 
   List<Tasks> _tasks = [];
   List<Tasks> get tasks => _tasks;
+  // List<String> session =  ["morning", "afternoon", "evening", "night"];
 
-  HabitViewModel() {
+  // String getSessionForTimeOfDay(String timeOfDay) {
+  //   switch (timeOfDay) {
+  //     case 'Morning':
+  //       return session[0];
+  //     case 'Afternoon':
+  //       return session[1];
+  //     case 'Evening':
+  //       return session[2];
+  //     case 'Night':
+  //       return session[3];
+  //     default:
+  //       return '';
+  //   }
+  // }
+
+  TasksViewModel() {
     _auth.authStateChanges().listen((user) {
-      if (user != null) loadHabits(user.uid);
+      if (user != null) loadTasks(user.uid);
     });
   }
 
-  Future<void> loadHabits(String uid) async {
+  Future<void> loadTasks(String uid) async {
     _isLoading = true;
     notifyListeners();
-    _tasks = await _firestore.fetchHabits(uid);
+    _tasks = await _firestore.fetchTasks(uid);
     _isLoading = false;
     notifyListeners();
   }
 
-  Future<void> markHabitIncomplete(Tasks habit) async {
-    habit.isCompleted = false;
-    await _firestore.updateHabit(_auth.currentUser!.uid, habit);
-    await loadHabits(_auth.currentUser!.uid);
+  Future<void> markTaskIncomplete(Tasks task) async {
+    task.isCompleted = false;
+    await _firestore.updateTask(_auth.currentUser!.uid, task);
+    await loadTasks(_auth.currentUser!.uid);
   }
 
-  Future<void> addHabit(String uid, String title, String description) async {
-    final task = Tasks(id: '', title: title, description: description);
-    final saved = await _firestore.addHabit(uid, task);
+  Future<void> addTask(
+      String uid, String title, String description, String timeOfDay) async {
+    final task = Tasks(
+        id: '', title: title, description: description, timeOfDay: timeOfDay);
+    final saved = await _firestore.addTask(uid, task);
     _tasks.insert(0, saved);
     notifyListeners();
   }
 
-  Future<void> restoreHabit(String uid, Tasks tasks) async {
-    await _firestore.habitsRef(uid).doc(tasks.id).set(tasks.toMap());
+  Future<void> restoreTask(String uid, Tasks tasks) async {
+    await _firestore.tasksRef(uid).doc(tasks.id).set(tasks.toMap());
     _tasks.insert(0, tasks);
     notifyListeners();
   }
 
-  Future<void> updateHabit(String uid, Tasks habit) async {
-    await _firestore.updateHabit(uid, habit);
-    final idx = _tasks.indexWhere((h) => h.id == habit.id);
-    if (idx != -1) _tasks[idx] = habit;
+  Future<void> updateTask(String uid, Tasks task) async {
+    await _firestore.updateTask(uid, task);
+    final idx = _tasks.indexWhere((h) => h.id == task.id);
+    if (idx != -1) _tasks[idx] = task;
     notifyListeners();
   }
 
-  Future<void> deleteHabit(String uid, String habitId) async {
-    await _firestore.deleteHabit(uid, habitId);
-    _tasks.removeWhere((h) => h.id == habitId);
+  Future<void> deleteTask(String uid, String taskId) async {
+    await _firestore.deleteTask(uid, taskId);
+    _tasks.removeWhere((h) => h.id == taskId);
     notifyListeners();
   }
 
-  void removeHabitLocally(String id) {
+  void removeTaskLocally(String id) {
     _tasks.removeWhere((h) => h.id == id);
     notifyListeners();
   }
 
-  Future<void> markHabitCompleted(Tasks habit) async {
+  Future<void> markTaskCompleted(Tasks task) async {
     final user = _auth.currentUser;
     if (user == null) return;
 
-    habit.isCompleted = true;
-    await _firestore.updateHabit(user.uid, habit);
+    task.isCompleted = true;
+    await _firestore.updateTask(user.uid, task);
     notifyListeners();
   }
 
@@ -85,14 +103,13 @@ class HabitViewModel extends ChangeNotifier {
 
   String _keyForDate(DateTime d) => DateFormat('yyyy-MM-dd').format(d);
 
-  Future<void> toggleProgress(String uid, Tasks habit, DateTime date) async {
+  Future<void> toggleProgress(String uid, Tasks task, DateTime date) async {
     final key = _keyForDate(date);
-    final current = habit.progress[key] ?? false;
-    habit.progress[key] = !current;
-    await updateHabit(uid, habit);
+    final current = task.progress[key] ?? false;
+    task.progress[key] = !current;
+    await updateTask(uid, task);
   }
 
   int get totalTasks => _tasks.length;
   int get completedTasks => _tasks.where((h) => h.isCompleted).length;
-
 }

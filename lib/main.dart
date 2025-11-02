@@ -19,13 +19,13 @@ class HabitifyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => HabitViewModel()),
+        ChangeNotifierProvider(create: (_) => TasksViewModel()),
         Provider(create: (_) => AuthService()),
       ],
       child: Builder(builder: (context) {
-        final vm = Provider.of<HabitViewModel>(context);
+        final vm = Provider.of<TasksViewModel>(context);
         return MaterialApp(
-          title: 'Habitify',
+          title: 'taskify',
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: vm.isDarkMode ? ThemeMode.dark : ThemeMode.light,

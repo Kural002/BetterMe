@@ -8,7 +8,7 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<HabitViewModel>(context);
+    final vm = Provider.of<TasksViewModel>(context);
     final auth = Provider.of<AuthService>(context);
     final user = auth.currentUser;
 

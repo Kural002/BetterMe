@@ -5,6 +5,7 @@ class Tasks {
   String title;
   String description;
   DateTime createdAt;
+  String timeOfDay;
   bool isCompleted;
 
   
@@ -15,6 +16,7 @@ class Tasks {
     required this.title,
     this.description = '',
     DateTime? createdAt,
+    this.timeOfDay = '',
     this.isCompleted = false,
     Map<String, bool>? progress,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -22,6 +24,7 @@ class Tasks {
 
   factory Tasks.fromDoc(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>? ?? {};
+    
 
     final rawProgress = (data['progress'] ?? {}) as Map<String, dynamic>;
 
@@ -30,10 +33,12 @@ class Tasks {
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       isCompleted: data['isCompleted'] ?? false,
+      timeOfDay: data['timeOfDay'] ?? '',
       createdAt: (data['createdAt'] is Timestamp)
           ? (data['createdAt'] as Timestamp).toDate()
           : DateTime.now(),
       progress: rawProgress.map((k, v) => MapEntry(k, v == true)),
+      
     );
   }
 
