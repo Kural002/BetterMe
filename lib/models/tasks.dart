@@ -48,6 +48,7 @@ class Tasks {
       'description': description,
       'createdAt': createdAt,
       'isCompleted': isCompleted,
+      'timeOfDay': timeOfDay,
       'progress': progress,
     };
   }

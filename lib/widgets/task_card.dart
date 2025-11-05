@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:habitify/viewmodels/task_viewmodel.dart';
+import 'package:provider/provider.dart';
 import '../models/tasks.dart';
 
 class TaskCard extends StatelessWidget {
@@ -7,32 +9,32 @@ class TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color timeColor;
+    Provider.of<TasksViewModel>(context, listen: false);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    switch (tasks.timeOfDay.toLowerCase()) {
-      case 'morning':
-        timeColor = Colors.amber;
-        break;
-      case 'afternoon':
-        timeColor = Colors.orangeAccent;
-        break;
-      case 'evening':
-        timeColor = Colors.deepPurpleAccent;
-        break;
-      case 'night':
-        timeColor = Colors.indigoAccent;
-        break;
-      default:
-        timeColor = Colors.grey;
-    }
+    final Color cardBg = isDark
+        ? (tasks.isCompleted ? Colors.green.withOpacity(0.12) : Colors.white.withOpacity(0.08))
+        : (tasks.isCompleted ? Colors.green.shade50 : Colors.white);
+    final Color titleColor = isDark ? Colors.white : Colors.black87;
+    final Color subtitleColor = isDark ? Colors.white70 : Colors.black54;
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
-      elevation: 2,
+      elevation: isDark ? 0 : 2,
+      color: cardBg,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
+        leading: tasks.isCompleted
+            ? const Icon(Icons.check_circle, color: Colors.green)
+            : const Icon(Icons.radio_button_unchecked, color: Colors.grey),
         title: Text(
           tasks.title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: titleColor,
+          ),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,18 +44,29 @@ class TaskCard extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(
                   tasks.description,
-                  style: const TextStyle(color: Colors.black54),
+                  style: TextStyle(
+                    color: tasks.isCompleted ? (isDark ? Colors.white60 : Colors.black45) : subtitleColor,
+                  ),
                 ),
               ),
           ],
         ),
-        trailing: Text(
-          tasks.timeOfDay,
-          style: TextStyle(
-            color: timeColor,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        trailing: tasks.timeOfDay.isNotEmpty
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.schedule, size: 18, color: isDark ? Colors.white70 : Colors.black54),
+                  const SizedBox(width: 4),
+                  Text(
+                    tasks.timeOfDay[0].toUpperCase() + tasks.timeOfDay.substring(1),
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              )
+            : null,
       ),
     );
   }

@@ -23,12 +23,11 @@ class HabitifyApp extends StatelessWidget {
         Provider(create: (_) => AuthService()),
       ],
       child: Builder(builder: (context) {
-        final vm = Provider.of<TasksViewModel>(context);
         return MaterialApp(
           title: 'taskify',
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          themeMode: vm.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          themeMode: ThemeMode.dark,
           home: const HomeScreen(),
         );
       }),

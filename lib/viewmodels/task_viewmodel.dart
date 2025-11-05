@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/tasks.dart';
 import '../services/firestore_service.dart';
 import '../services/auth_service.dart';
-import 'package:intl/intl.dart';
+ 
 
 class TasksViewModel extends ChangeNotifier {
   final FirestoreService _firestore = FirestoreService();
@@ -12,27 +12,12 @@ class TasksViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  bool _isDarkMode = false;
-  bool get isDarkMode => _isDarkMode;
+  int _themeVariant = 0; // 0: grey, 1: blue-green
+  int get themeVariant => _themeVariant;
 
   List<Tasks> _tasks = [];
   List<Tasks> get tasks => _tasks;
-  // List<String> session =  ["morning", "afternoon", "evening", "night"];
 
-  // String getSessionForTimeOfDay(String timeOfDay) {
-  //   switch (timeOfDay) {
-  //     case 'Morning':
-  //       return session[0];
-  //     case 'Afternoon':
-  //       return session[1];
-  //     case 'Evening':
-  //       return session[2];
-  //     case 'Night':
-  //       return session[3];
-  //     default:
-  //       return '';
-  //   }
-  // }
 
   TasksViewModel() {
     _auth.authStateChanges().listen((user) {
@@ -82,8 +67,15 @@ class TasksViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeTaskLocally(String id) {
-    _tasks.removeWhere((h) => h.id == id);
+  Future<void> resetTasks() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    for (var task in List.from(_tasks)) {
+      await _firestore.deleteTask(user.uid, task.id);
+    }
+
+    _tasks.clear();
     notifyListeners();
   }
 
@@ -96,18 +88,9 @@ class TasksViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleTheme() {
-    _isDarkMode = !_isDarkMode;
+  void toggleThemeVariant() {
+    _themeVariant = (_themeVariant + 1) % 2;
     notifyListeners();
-  }
-
-  String _keyForDate(DateTime d) => DateFormat('yyyy-MM-dd').format(d);
-
-  Future<void> toggleProgress(String uid, Tasks task, DateTime date) async {
-    final key = _keyForDate(date);
-    final current = task.progress[key] ?? false;
-    task.progress[key] = !current;
-    await updateTask(uid, task);
   }
 
   int get totalTasks => _tasks.length;
