@@ -23,11 +23,18 @@ class _HomeScreenState extends State<HomeScreen> {
     final total = vm.totalTasks;
     final completed = vm.completedTasks;
     final progress = total == 0 ? 0.0 : completed / total;
-    final scaffoldContext = context;
     Theme.of(context);
     final List<Color> gradientColors = vm.themeVariant == 0
-        ? const [Color(0xFF2F2F2F), Color(0xFF4B5563), Color(0xFF9CA3AF)]
-        : const [Color(0xFF1FA2FF), Color(0xFF12D8FA), Color(0xFFA6FFCB)];
+        ? const [
+            Color(0xFF2F2F2F),
+            Color(0xFF4B5563),
+            Color(0xFF9CA3AF),
+          ]
+        : const [
+            Color(0xFF1FA2FF),
+            Color(0xFF12D8FA),
+            Color(0xFFA6FFCB),
+          ];
 
     void _showAddTaskDialog(BuildContext context) {
       final titleController = TextEditingController();
@@ -44,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             title: Text(
               "Add New Task",
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              style: TextStyle(color: Colors.white),
             ),
             content: SingleChildScrollView(
               child: StatefulBuilder(
@@ -54,36 +61,87 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       TextField(
                         controller: titleController,
+                        style: const TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                           labelText: "Task Title",
-                          border: OutlineInputBorder(),
+                          labelStyle: TextStyle(color: Colors.white70),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white54),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1.8),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 10),
                       TextField(
                         controller: descController,
+                        style: const TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                           labelText: "Description (optional)",
-                          border: OutlineInputBorder(),
+                          labelStyle: TextStyle(color: Colors.white70),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white54),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1.8),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
                         ),
                         maxLines: 2,
                       ),
                       const SizedBox(height: 10),
                       DropdownButtonFormField<String>(
                         value: selectedTimeOfDay,
+                        dropdownColor: Colors.black87,
                         decoration: const InputDecoration(
                           labelText: 'Time of day',
-                          border: OutlineInputBorder(),
+                          labelStyle: TextStyle(color: Colors.white70),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white54),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.white, width: 1.8),
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
                         ),
                         items: const [
                           DropdownMenuItem(
-                              value: 'morning', child: Text('Morning')),
+                            value: 'morning',
+                            child: Text('Morning',
+                                style: TextStyle(color: Colors.white)),
+                          ),
                           DropdownMenuItem(
-                              value: 'afternoon', child: Text('Afternoon')),
+                            value: 'afternoon',
+                            child: Text('Afternoon',
+                                style: TextStyle(color: Colors.white)),
+                          ),
                           DropdownMenuItem(
-                              value: 'evening', child: Text('Evening')),
+                            value: 'evening',
+                            child: Text('Evening',
+                                style: TextStyle(color: Colors.white)),
+                          ),
                           DropdownMenuItem(
-                              value: 'night', child: Text('Night')),
+                            value: 'night',
+                            child: Text('Night',
+                                style: TextStyle(color: Colors.white)),
+                          ),
                         ],
                         onChanged: (val) =>
                             setState(() => selectedTimeOfDay = val),
@@ -96,7 +154,10 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text("Cancel"),
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -118,7 +179,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SnackBar(content: Text("Task added successfully!")),
                   );
                 },
-                child: const Text("Add"),
+                child: Text(
+                  "Add",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           );
@@ -233,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (direction == DismissDirection.startToEnd) {
                       task.isCompleted = true;
                       await vm.updateTask(uid, task);
-                      ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text("${task.title} marked as completed"),
                           action: SnackBarAction(
@@ -254,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     final task = h;
                     if (direction == DismissDirection.endToStart) {
                       await vm.deleteTask(uid, task.id);
-                      ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text("${task.title} deleted"),
                           action: SnackBarAction(

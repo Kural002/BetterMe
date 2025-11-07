@@ -65,9 +65,9 @@ class AppDrawer extends StatelessWidget {
               ),
               trailing: Switch(
                 value:
-                    vm.themeVariant == 1, // true = Blue & Green, false = Grey
+                    vm.themeVariant == 1,
                 onChanged: (value) {
-                  vm.toggleThemeVariant(); // toggle theme
+                  vm.toggleThemeVariant(); 
                 },
                 activeColor: Colors.greenAccent,
               ),
