@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/task_viewmodel.dart';
 import '../services/auth_service.dart';
@@ -19,12 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
     try {
       final auth = Provider.of<AuthService>(context, listen: false);
-      final user = await auth.signInWithGoogle();
-      if (user == null && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign-in cancelled')),
-        );
-      }
+      await auth.signInWithGoogle();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -83,90 +79,97 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           // Content
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // App Title
-                  Text(
-                    'BetterMe',
-                    style: theme.textTheme.displaySmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Build habits, one day at a time',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.9),
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  // Glassmorphism Card
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white.withOpacity(0.18),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Google button
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.black87,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 14, horizontal: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                icon: const Icon(Icons.login),
-                                label: Text(
-                                  _isLoading
-                                      ? 'Signing in...'
-                                      : 'Continue with Google',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                onPressed: _isLoading
-                                    ? null
-                                    : () => _signIn(context),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            // Terms note
-                            Text(
-                              'By continuing you agree to our Terms & Privacy Policy',
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: Colors.white.withOpacity(0.85),
-                              ),
-                            ),
-                          ],
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 480),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // App Title
+                      Text(
+                        'BetterMe',
+                        style: theme.textTheme.displaySmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Build habits, one day at a time',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                      ),
+                      const SizedBox(height: 28),
+                      // Glassmorphism Card
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white.withOpacity(0.18),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.3),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Google button
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton.icon(
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 0,
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black87,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 14, horizontal: 16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    icon: const Icon(Icons.login),
+                                    label: Text(
+                                      _isLoading
+                                          ? 'Signing in...'
+                                          : (kIsWeb
+                                              ? 'Continue with Google (popup)'
+                                              : 'Continue with Google'),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    onPressed: _isLoading
+                                        ? null
+                                        : () => _signIn(context),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                // Terms note
+                                Text(
+                                  'By continuing you agree to our Terms & Privacy Policy',
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: Colors.white.withOpacity(0.85),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

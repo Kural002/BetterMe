@@ -42,46 +42,54 @@ class _HomeScreenState extends State<HomeScreen> {
           return AlertDialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            title: const Text("Add New Task"),
+            title: Text(
+              "Add New Task",
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            ),
             content: SingleChildScrollView(
               child: StatefulBuilder(
                 builder: (context, setState) {
                   return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: titleController,
-                    decoration: const InputDecoration(
-                      labelText: "Task Title",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: descController,
-                    decoration: const InputDecoration(
-                      labelText: "Description (optional)",
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 2,
-                  ),
-                  const SizedBox(height: 10),
-                  DropdownButtonFormField<String>(
-                    value: selectedTimeOfDay,
-                    decoration: const InputDecoration(
-                      labelText: 'Time of day',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: const [
-                      DropdownMenuItem(value: 'morning', child: Text('Morning')),
-                      DropdownMenuItem(value: 'afternoon', child: Text('Afternoon')),
-                      DropdownMenuItem(value: 'evening', child: Text('Evening')),
-                      DropdownMenuItem(value: 'night', child: Text('Night')),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(
+                          labelText: "Task Title",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: descController,
+                        decoration: const InputDecoration(
+                          labelText: "Description (optional)",
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: 10),
+                      DropdownButtonFormField<String>(
+                        value: selectedTimeOfDay,
+                        decoration: const InputDecoration(
+                          labelText: 'Time of day',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: const [
+                          DropdownMenuItem(
+                              value: 'morning', child: Text('Morning')),
+                          DropdownMenuItem(
+                              value: 'afternoon', child: Text('Afternoon')),
+                          DropdownMenuItem(
+                              value: 'evening', child: Text('Evening')),
+                          DropdownMenuItem(
+                              value: 'night', child: Text('Night')),
+                        ],
+                        onChanged: (val) =>
+                            setState(() => selectedTimeOfDay = val),
+                      ),
                     ],
-                    onChanged: (val) => setState(() => selectedTimeOfDay = val),
-                  ),
-                ],
-              );
+                  );
                 },
               ),
             ),
@@ -120,7 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Stack(
       children: [
-        // Grey gradient background to match LoginScreen theme
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -130,7 +137,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        // Subtle decorative circles
         Positioned(
           top: -60,
           right: -40,
@@ -160,134 +166,135 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-          SizedBox(height: kToolbarHeight + MediaQuery.of(context).padding.top + 10),
-          Center(
-            child: Column(
-              children: [
-                Stack(
-                  alignment: Alignment.center,
+              SizedBox(
+                  height:
+                      kToolbarHeight + MediaQuery.of(context).padding.top + 10),
+              Center(
+                child: Column(
                   children: [
-                    SizedBox(
-                      height: 140,
-                      width: 140,
-                      child: CircularProgressIndicator(
-                        value: progress,
-                        strokeWidth: 12,
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Colors.greenAccent),
-                        backgroundColor: Colors.white24,
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Stack(
+                      alignment: Alignment.center,
                       children: [
-                        Text(
-                          "$completed / $total",
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.white,
+                        SizedBox(
+                          height: 140,
+                          width: 140,
+                          child: CircularProgressIndicator(
+                            value: progress,
+                            strokeWidth: 12,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.greenAccent),
+                            backgroundColor: Colors.white24,
                           ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "$completed / $total",
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
+                    const SizedBox(height: 12),
+                    Text(
+                      "Task Progress",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  "Task Progress",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white70,
+              ),
+              const SizedBox(height: 30),
+              for (final h in List.of(vm.tasks))
+                Dismissible(
+                  key: Key(h.id),
+                  background: Container(
+                    color: Colors.green,
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(Icons.check, color: Colors.white),
                   ),
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  confirmDismiss: (direction) async {
+                    final uid = vm.currentUserId;
+                    final task = h;
+                    if (direction == DismissDirection.startToEnd) {
+                      task.isCompleted = true;
+                      await vm.updateTask(uid, task);
+                      ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                        SnackBar(
+                          content: Text("${task.title} marked as completed"),
+                          action: SnackBarAction(
+                            label: 'Undo',
+                            onPressed: () async {
+                              task.isCompleted = false;
+                              await vm.updateTask(uid, task);
+                            },
+                          ),
+                        ),
+                      );
+                      return false;
+                    }
+                    return true;
+                  },
+                  onDismissed: (direction) async {
+                    final uid = vm.currentUserId;
+                    final task = h;
+                    if (direction == DismissDirection.endToStart) {
+                      await vm.deleteTask(uid, task.id);
+                      ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                        SnackBar(
+                          content: Text("${task.title} deleted"),
+                          action: SnackBarAction(
+                            label: 'Undo',
+                            onPressed: () async {
+                              await vm.restoreTask(uid, task);
+                            },
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: TaskCard(tasks: h),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 30),
-          for (final h in List.of(vm.tasks))
-            Dismissible(
-              key: Key(h.id),
-              background: Container(
-                color: Colors.green,
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Icon(Icons.check, color: Colors.white),
-              ),
-              secondaryBackground: Container(
-                color: Colors.red,
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Icon(Icons.delete, color: Colors.white),
-              ),
-              confirmDismiss: (direction) async {
-                final uid = vm.currentUserId;
-                final task = h;
-                if (direction == DismissDirection.startToEnd) {
-                  task.isCompleted = true;
-                  await vm.updateTask(uid, task);
-                  ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                    SnackBar(
-                      content: Text("${task.title} marked as completed"),
-                      action: SnackBarAction(
-                        label: 'Undo',
-                        onPressed: () async {
-                          task.isCompleted = false;
-                          await vm.updateTask(uid, task);
-                        },
-                      ),
+              const SizedBox(height: 30),
+              Center(
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white24,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  );
-                  return false;
-                }
-                return true;
-              },
-              onDismissed: (direction) async {
-                final uid = vm.currentUserId;
-                final task = h;
-                if (direction == DismissDirection.endToStart) {
-                  await vm.deleteTask(uid, task.id);
-                  ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                    SnackBar(
-                      content: Text("${task.title} deleted"),
-                      action: SnackBarAction(
-                        label: 'Undo',
-                        onPressed: () async {
-                          await vm.restoreTask(uid, task);
-                        },
-                      ),
+                  ),
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    'Add Habit',
+                    style: TextStyle(
+                      color: Colors.white,
                     ),
-                  );
-                }
-              },
-              child: TaskCard(tasks: h),
-            ),
-          const SizedBox(height: 30),
-          Center(
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(  
-                backgroundColor: Colors.white24,
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  ),
+                  onPressed: () => _showAddTaskDialog(context),
                 ),
               ),
-              icon: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-              label: Text(
-                'Add Habit',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-
-              onPressed: () => _showAddTaskDialog(context),
-            ),
-          ),
-        ],
+            ],
           ),
         ),
       ],
@@ -317,7 +324,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: const Text(
           'BetterMe',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, letterSpacing: 0.2),
+          style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2),
         ),
         iconTheme: const IconThemeData(color: Colors.white70),
         actions: [
