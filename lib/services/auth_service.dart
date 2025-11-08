@@ -13,13 +13,10 @@ class AuthService {
   Future<User?> signInWithGoogle() async {
     try {
       if (kIsWeb) {
-        // On web (including running inside a WebView that hosts the web build),
-        // use FirebaseAuth's popup-based Google sign-in.
         final GoogleAuthProvider provider = GoogleAuthProvider();
         final UserCredential userCredential = await _auth.signInWithPopup(provider);
         return userCredential.user;
       } else {
-        // On mobile, use the native Google Sign-In flow.
         await _googleSignIn.signOut();
         final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
         if (googleUser == null) return null;

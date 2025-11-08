@@ -64,10 +64,9 @@ class AppDrawer extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
               trailing: Switch(
-                value:
-                    vm.themeVariant == 1,
+                value: vm.themeVariant == 1,
                 onChanged: (value) {
-                  vm.toggleThemeVariant(); 
+                  vm.toggleThemeVariant();
                 },
                 activeColor: Colors.greenAccent,
               ),
@@ -77,8 +76,9 @@ class AppDrawer extends StatelessWidget {
               title:
                   const Text('Logout', style: TextStyle(color: Colors.white)),
               onTap: () async {
+                final auth = Provider.of<AuthService>(context, listen: false);
                 await auth.signOut();
-                Navigator.pop(context);
+                ;
               },
             ),
             const Spacer(),

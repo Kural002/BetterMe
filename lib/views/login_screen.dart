@@ -43,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // Gradient background
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -53,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-          // Subtle decorative circles
           Positioned(
             top: -60,
             right: -40,
@@ -78,7 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-          // Content
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -88,7 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // App Title
                       Text(
                         'BetterMe',
                         style: theme.textTheme.displaySmall?.copyWith(
@@ -105,7 +101,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 28),
-                      // Glassmorphism Card
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: BackdropFilter(
@@ -123,7 +118,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                // Google button
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
@@ -154,7 +148,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                // Terms note
                                 Text(
                                   'By continuing you agree to our Terms & Privacy Policy',
                                   textAlign: TextAlign.center,

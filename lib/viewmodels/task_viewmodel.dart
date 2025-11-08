@@ -12,7 +12,7 @@ class TasksViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  int _themeVariant = 0; // 0: grey, 1: blue-green
+  int _themeVariant = 0; 
   int get themeVariant => _themeVariant;
 
   List<Tasks> _tasks = [];
